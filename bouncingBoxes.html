@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<body>
+<canvas id="canvas1" width="500" height="500"></canvas>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<script>
+
+  var canvas = document.getElementById('canvas1');
+
+  var context = canvas.getContext("2d");
+
+const NUM_POINTS = 50;
+function getRandomColor() { //random color generator stolen from the interwebz.
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color; //Random Hex value
+}
+// point creation
+
+const points = [];
+
+for(var i = 0; i < NUM_POINTS; i++) {
+
+  points.push({
+
+    x: Math.random() * canvas.width * 1,
+
+    y: Math.random() * canvas.height * 1,
+
+    width: Math.random() * 30,
+
+    height: Math.random() * 30,
+
+    xDelta: Math.pow(-1, Math.floor((Math.random() * 10) + 1)), // ammount to be added to point.x randomly choosen between 1/-1
+
+    yDelta: Math.pow(-1, Math.floor((Math.random() * 10) + 1)), // ammount to be added to point.y randomly choosen between 1/-1
+
+    color: getRandomColor()
+
+  });
+
+}
+
+
+
+const draw = function() {
+
+
+  context.clearRect(0, 0, canvas.width, canvas.height); //clear the whole canvas
+  points.forEach(function(point){
+    context.fillStyle = point.color; //rectangle colour
+    context.fillRect(point.x, point.y, point.width, point.height); //draw said rectangle
+    
+    // collision detection code start
+    if((point.x + point.width) >= canvas.width){
+        if(point.xDelta>0)
+          point.xDelta = point.xDelta * -1;  
+    } 
+    if(point.x<=0){
+        if(point.xDelta<0)
+          point.xDelta=point.xDelta *-1;
+    }
+    if((point.y + point.height) >= canvas.height){
+        if(point.yDelta>0)
+          point.yDelta = point.yDelta * -1;
+    } 
+    if(point.y<=0){
+        if(point.yDelta<=0)
+          point.yDelta=point.yDelta*-1;
+    }
+    // collision detection code finish
+    point.x += point.xDelta;
+    point.y += point.yDelta;
+  });
+};
+
+var animate = function() {
+
+    draw();
+
+    window.setTimeout(animate, 15);
+
+};
+
+animate();
+
+</script>
+</body>
+</html>
